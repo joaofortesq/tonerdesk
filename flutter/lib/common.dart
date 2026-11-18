@@ -2065,6 +2065,16 @@ Future<bool> restoreWindowPosition(WindowType type,
         // See https://github.com/rustdesk/rustdesk/blob/9b9276e7524523d7f667fefcd0694d981443df0e/flutter/macos/Runner/Base.lproj/MainMenu.xib#L333
         // If `<windowPositionMask>` in `<window>` is not set, the window will be centered.
         break;
+      case WindowType.RemoteDesktop:
+        // TonerDesk: like AnyDesk/TeamViewer, the first remote session window
+        // opens maximized. Afterwards the user's last size/position is restored.
+        if (windowId != null && (isWindows || isLinux)) {
+          final wc = WindowController.fromWindowId(windowId);
+          Future.delayed(Duration(milliseconds: 300), () async {
+            await wc.maximize();
+          });
+        }
+        break;
       default:
         // No need to change the position of a sub window if no position is saved,
         // since the default position is already centered.
